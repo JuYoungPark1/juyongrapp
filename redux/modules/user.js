@@ -1,14 +1,38 @@
 // Imports
 import { API_URL } from '../../constants';
+import { AsyncStorage } from 'react-native';
 
 // Actions
 
+const LOG_IN = 'LOG_IN';
+const LOG_OUT = 'LOG_OUT';
+const SET_USER = 'SET_USER';
 // Action Creators
+
+function setLogIn(token) {
+  return {
+    type: LOG_IN,
+    token,
+  };
+}
+
+function logOut() {
+  return {
+    type: LOG_OUT,
+  };
+}
+
+function setUser(user) {
+  return {
+    type: SET_USER,
+    user,
+  };
+}
 
 // API Actions
 function login(username, password) {
   return dispatch => {
-    fetch(`${API_URL}/rest-auth/login/`, {
+    return fetch(`${API_URL}/rest-auth/login/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -19,7 +43,15 @@ function login(username, password) {
       }),
     })
       .then(response => response.json())
-      .then(json => console.log(json));
+      .then(json => {
+        if (json.user && json.token) {
+          dispatch(setUser(json.user));
+          dispatch(setLogIn(json.token));
+          return true;
+        } else {
+          return false;
+        }
+      });
   };
 }
 
@@ -33,12 +65,41 @@ const initialState = {
 function reducer(state = initialState, action) {
   {
     switch (action.type) {
+      case LOG_IN:
+        return applyLogIn(state, action);
+      case LOG_OUT:
+        return applyLogOut(state, action);
+      case SET_USER:
+        return applySetUser(state, action);
       default:
         return state;
     }
   }
 }
 // Reducer Functions
+function applyLogIn(state, action) {
+  const { token } = action;
+  return {
+    ...state,
+    isLoggedIn: true,
+    token,
+  };
+}
+async function applyLogOut(state, action) {
+  await AsyncStorage.clear();
+  return {
+    ...state,
+    isLoggedIn: false,
+    token: '',
+  };
+}
+function applySetUser(state, action) {
+  const { user } = action;
+  return {
+    ...state,
+    profile: user,
+  };
+}
 
 // Exports
 const actionCreators = {
