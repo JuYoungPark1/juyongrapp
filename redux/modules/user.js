@@ -1,6 +1,7 @@
 // Imports
-import { API_URL } from '../../constants';
+import { API_URL, FB_APP_ID } from '../../constants';
 import { AsyncStorage } from 'react-native';
+import { Facebook } from 'expo';
 
 // Actions
 
@@ -55,6 +56,38 @@ function login(username, password) {
   };
 }
 
+function facebookLogin() {
+  return async dispatch => {
+    const { type, token } = await Facebook.logInWithReadPermissionsAsync(
+      FB_APP_ID,
+      {
+        permissions: ['public_profile', 'email'],
+      }
+    );
+    if (type === 'success') {
+      return fetch(`${API_URL}/users/login/facebook/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          access_token: token,
+        }),
+      })
+        .then(response => response.json())
+        .then(json => {
+          if (json.user && json.token) {
+            dispatch(setUser(json.user));
+            dispatch(setLogIn(json.token));
+            return true;
+          } else {
+            return false;
+          }
+        });
+    }
+  };
+}
+
 // Initial State
 
 const initialState = {
@@ -104,6 +137,7 @@ function applySetUser(state, action) {
 // Exports
 const actionCreators = {
   login,
+  facebookLogin,
 };
 
 export { actionCreators };

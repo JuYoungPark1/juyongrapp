@@ -1,12 +1,18 @@
 import React, { Component } from 'react';
 import LogInScreen from './presenter';
 import { Alert } from 'react-native';
+import PropTypes from 'prop-types';
 
 class Container extends Component {
   state = {
     username: '',
     password: '',
     isSubmitting: false,
+  };
+
+  static propTypes = {
+    login: PropTypes.func.isRequired,
+    fbLogin: PropTypes.func.isRequired,
   };
   static navigationOptions = ({ navgiation }) => ({
     header: null,
@@ -19,6 +25,7 @@ class Container extends Component {
         changeUsername={this._changeUsername}
         changePassword={this._changePassword}
         submit={this._submit}
+        handleFBLogin={this._handleFBLogin}
       />
     );
   }
@@ -50,6 +57,17 @@ class Container extends Component {
       } else {
         Alert.alert('All fields are required.');
       }
+    }
+  };
+
+  _handleFBLogin = async () => {
+    const { fbLogin } = this.props;
+    this.setState({ isSubmitting: true });
+    const facebookResult = await fbLogin();
+    if (!facebookResult) {
+      this.setState({
+        isSubmitting: false,
+      });
     }
   };
 }
