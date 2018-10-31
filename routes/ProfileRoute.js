@@ -6,9 +6,10 @@ const ProfileRoute = createStackNavigator(
   {
     Profile: {
       screen: ProfileScreen,
-      navigationOptions: {
+      navigationOptions: ({ screenProps }) => ({
+        headerTitle: screenProps.username,
         headerLeft: null,
-      },
+      }),
     },
     ...sharedRoutes,
   },

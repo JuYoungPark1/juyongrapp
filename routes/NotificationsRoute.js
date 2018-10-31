@@ -7,6 +7,7 @@ const NotificationsRoute = createStackNavigator(
     Notifications: {
       screen: NotificationsScreen,
       navigationOptions: {
+        headerTitle: 'Notifications',
         headerLeft: null,
       },
     },
