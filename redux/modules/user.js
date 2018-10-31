@@ -8,6 +8,7 @@ import { Facebook } from 'expo';
 const LOG_IN = 'LOG_IN';
 const LOG_OUT = 'LOG_OUT';
 const SET_USER = 'SET_USER';
+const SET_NOTIFICATIONS = 'SET_NOTIFICATIONS';
 // Action Creators
 
 function setLogIn(token) {
@@ -27,6 +28,13 @@ function setUser(user) {
   return {
     type: SET_USER,
     user,
+  };
+}
+
+function setNotifications(notifications) {
+  return {
+    type: SET_NOTIFICATIONS,
+    notifications,
   };
 }
 
@@ -88,6 +96,55 @@ function facebookLogin() {
   };
 }
 
+function getNotifications() {
+  return (dispatch, getState) => {
+    const {
+      user: { token },
+    } = getState();
+    fetch(`${API_URL}/notifications/`, {
+      headers: {
+        Authorization: `JWT ${token}`,
+      },
+    })
+      .then(response => {
+        if (response.status === 401) {
+          dispatch(logOut());
+        } else {
+          return response.json();
+        }
+      })
+      .then(json => {
+        dispatch(setNotifications(json));
+      });
+  };
+}
+
+function getOwnProfile() {
+  return (dispatch, getState) => {
+    const {
+      user: {
+        token,
+        profile: { username },
+      },
+    } = getState();
+    fetch(`${API_URL}/users/${username}/`, {
+      headers: {
+        Authorization: `JWT ${token}`,
+      },
+    })
+      .then(response => {
+        if (response.status === 401) {
+          dispatch(logOut());
+        } else {
+          return response.json();
+        }
+      })
+      .then(json => {
+        dispatch(setUser(json));
+      });
+  };
+}
+
 // Initial State
 
 const initialState = {
@@ -104,6 +161,8 @@ function reducer(state = initialState, action) {
         return applyLogOut(state, action);
       case SET_USER:
         return applySetUser(state, action);
+      case SET_NOTIFICATIONS:
+        return applySetNotications(state, action);
       default:
         return state;
     }
@@ -134,10 +193,21 @@ function applySetUser(state, action) {
   };
 }
 
+function applySetNotications(state, action) {
+  const { notifications } = action;
+  return {
+    ...state,
+    notifications,
+  };
+}
+
 // Exports
 const actionCreators = {
   login,
   facebookLogin,
+  logOut,
+  getNotifications,
+  getOwnProfile,
 };
 
 export { actionCreators };
