@@ -6,6 +6,9 @@ const SearchRoute = createStackNavigator(
   {
     Search: {
       screen: SearchScreen,
+      navigationOptions: {
+        headerLeft: null,
+      },
     },
     ...sharedRoutes,
   },

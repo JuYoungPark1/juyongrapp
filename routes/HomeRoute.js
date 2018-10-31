@@ -6,6 +6,9 @@ const HomeRoute = createStackNavigator(
   {
     Home: {
       screen: FeedScreen,
+      navigationOptions: {
+        headerLeft: null,
+      },
     },
     ...sharedRoutes,
   },
