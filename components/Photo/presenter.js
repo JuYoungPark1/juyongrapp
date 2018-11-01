@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Image } from 'react-native';
 import FadeIn from 'react-native-fade-in-image';
 
 const Photo = props => (
@@ -43,7 +43,7 @@ const Photo = props => (
           </TouchableOpacity>
         </View>
       )}
-      <Text>{prosp.natural_time}</Text>
+      <Text>{props.natural_time}</Text>
     </View>
   </View>
 );
@@ -70,6 +70,7 @@ Photo.propTypes = {
   ).isRequired,
   natural_time: PropTypes.string.isRequired,
   is_liked: PropTypes.bool.isRequired,
+  is_vertical: PropTypes.bool.isRequired,
 };
 
 export default Photo;
