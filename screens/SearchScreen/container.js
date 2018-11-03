@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import SearchScreen from './presenter';
 import SearchBar from '../../components/SearchBar';
+import PropTypes from 'prop-types';
 
 class Container extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -10,8 +11,15 @@ class Container extends Component {
     };
   };
 
+  static propTypes = {
+    getEmptyFeed: PropTypes.func.isRequired,
+    searchHashtag: PropTypes.func.isRequired,
+    search: PropTypes.array,
+  };
+
   state = {
     searchingBy: '',
+    isFetching: false,
   };
 
   componentDidMount() {
@@ -20,17 +28,39 @@ class Container extends Component {
       submitSearch: this._submitSearch,
     });
   }
+  componentWillReceiveProps = nextProps => {
+    if (nextProps.search) {
+      this.setState({
+        isFetching: false,
+      });
+    }
+  };
 
   render() {
-    return <SearchScreen {...this.state} />;
+    return (
+      <SearchScreen {...this.state} {...this.props} refresh={this._refresh} />
+    );
   }
 
   _submitSearch = text => {
-    const { searchingBy } = this.state;
+    const { searchHashtag } = this.props;
     this.setState({
       searchingBy: text,
+      isFetching: true,
     });
+    searchHashtag(text);
+
     // call api and search by hashtag
+  };
+
+  _refresh = () => {
+    const { searchingBy } = this.state;
+    const { getEmptyFeed } = this.props;
+    if (searchingBy === '') {
+      getEmptyFeed();
+    } else {
+      searchHashtag(searchingBy);
+    }
   };
 }
 

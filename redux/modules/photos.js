@@ -116,6 +116,29 @@ function unlikePhoto(photoId) {
   };
 }
 
+function searchByHastag(hashtag) {
+  return (dispatch, getState) => {
+    const {
+      user: { token },
+    } = getState();
+    fetch(`${API_URL}/images/search/?hashtags=${hashtag}`, {
+      headers: {
+        Authorization: `JWT ${token}`,
+      },
+    })
+      .then(response => {
+        if (response.status === 401) {
+          dispatch(userActions.logOut());
+        } else {
+          return response.json();
+        }
+      })
+      .then(json => {
+        dispatch(setSearch(json));
+      });
+  };
+}
+
 // Initial State
 
 const initialState = {};
@@ -158,6 +181,7 @@ const actionCreators = {
   getSearch,
   likePhoto,
   unlikePhoto,
+  searchByHastag,
 };
 
 export { actionCreators };
