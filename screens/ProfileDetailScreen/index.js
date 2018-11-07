@@ -1,6 +1,16 @@
-import React from 'react';
-import { Text } from 'react-native';
+import { connect } from 'react-redux';
+import Container from './container';
+import { actionCreators as userActions } from '../../redux/modules/user';
 
-const PhotoScreen = props => <Text>Profile Detail Screen</Text>;
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    getProfile: username => {
+      return dispatch(userActions.getProfile(username));
+    },
+  };
+};
 
-export default PhotoScreen;
+export default connect(
+  null,
+  mapDispatchToProps
+)(Container);
