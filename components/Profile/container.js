@@ -28,6 +28,7 @@ class Container extends Component {
   };
   render() {
     const { isFetching } = this.state;
+    console.log(this.props);
     return <Profile {...this.props} isFetching={isFetching} />;
   }
 }

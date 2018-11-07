@@ -9,13 +9,7 @@ class Container extends Component {
   };
   render() {
     const { profile, getOwnProfile } = this.props;
-    return (
-      <Profile
-        profileObject={profile}
-        refresh={getOwnProfile}
-        {...this.props}
-      />
-    );
+    return <Profile profileObject={profile} refresh={getOwnProfile} />;
   }
 }
 
