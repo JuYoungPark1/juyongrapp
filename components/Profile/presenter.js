@@ -1,5 +1,5 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 import {
   View,
   Text,
@@ -9,14 +9,14 @@ import {
   Dimensions,
   Image,
   TouchableOpacity,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import FadeIn from 'react-native-fade-in-image';
-import ProfileNumber from '../ProfileNumber';
-import SquarePhoto from '../SquarePhoto';
-import Photo from '../Photo';
+} from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
+import FadeIn from 'react-native-fade-in-image'
+import ProfileNumber from '../ProfileNumber'
+import SquarePhoto from '../SquarePhoto'
+import Photo from '../Photo'
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get('window')
 
 const Profile = props => (
   <View style={styles.container}>
@@ -31,7 +31,7 @@ const Profile = props => (
       }>
       <View style={styles.profile}>
         <View style={styles.header}>
-          <TouchableOpacity>
+          <TouchableOpacity onPressOut={props.showAS}>
             <Image
               source={
                 props.profileObject.profile_image
@@ -128,7 +128,7 @@ const Profile = props => (
       </View>
     </ScrollView>
   </View>
-);
+)
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: 'white' },
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
   },
-});
+})
 
 Profile.propTypes = {
   isFetching: PropTypes.bool.isRequired,
@@ -244,6 +244,7 @@ Profile.propTypes = {
   changeToList: PropTypes.func.isRequired,
   changeToGrid: PropTypes.func.isRequired,
   mode: PropTypes.oneOf(['grid', 'list']).isRequired,
-};
+  showAS: PropTypes.func.isRequired,
+}
 
-export default Profile;
+export default Profile
